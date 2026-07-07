@@ -88,3 +88,11 @@ l[2:5] = [20, 30]   # [0, 1, 20, 30, 5, 6, 7, 8, 9]
 del l[5:7]          # [0, 1, 20, 30, 5, 8, 9]
 l[2:5] = 100        # TypeError: can only assign an iterable
 
+# Using + and * with Sequences
+l = [1, 2, 3]
+l * 5         # [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
+5 * 'abcd'    #'abcdabcdabcdabcdabcd'
+
+# Building Lists of Lists
+board = [['_'] * 3 for i in range(3)] # [['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
+board[1][2] = 'X'                     # [['_', '_', '_'], ['_', '_', 'X'], ['_', '_', '_']]
