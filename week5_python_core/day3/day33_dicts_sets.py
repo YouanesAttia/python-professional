@@ -29,3 +29,17 @@ add_contact("Bob", "555-2020")
 add_contact("Charlie", "555-3030")
 
 print(phone_book)
+
+
+def find_two_sum(nums, target):
+    prev_map = {}
+    for i, num in enumerate(nums):
+        diff = target - num
+        if diff in prev_map:
+            return [prev_map[diff], i]
+        prev_map[num] = i
+    return None
+
+numbers = [2, 7, 11, 15]
+target_sum = 9
+result = find_two_sum(numbers, target_sum)
