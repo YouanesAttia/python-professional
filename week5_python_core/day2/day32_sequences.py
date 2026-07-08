@@ -17,3 +17,25 @@ flattenedgen = (num for row in matrix for num in row)
 
 print(sys.getsizeof(even))
 print(sys.getsizeof(evengen))
+
+
+a = 10
+b = 20
+a, b = b, a
+print(a)  # 20
+print(b)  # 10
+
+data = ("Cairo", 2026, "Egypt", "Africa", 22_000_000)
+city, year, *rest = data
+print(city)
+print(year)
+print(rest)
+
+
+def get_student():
+    return "Alice", 20, "Physics"
+
+name, age, major = get_student()
+print(name)
+print(age)
+print(major)
