@@ -53,8 +53,29 @@ for word in words:
 print(grouped_words)
 
 
+
 s1 = {1, 2, 3, 4, 5}
 s2 = {4, 5, 6, 7, 8}
 print(s1 & s2)
 print(s1 | s2)
 print(s1 - s2)
+
+
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.cache = collections.OrderedDict()
+        self.capacity = self.capacity
+    
+    def get(self, key: int):
+        if key not in self.cache:
+            return -1
+        self.cache.move_to_end(key)
+        return self.cache[key]
+    
+    def put(self, key: int, value: int):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.capacity:
+            self.cache.popitem(last=False)
