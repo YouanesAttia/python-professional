@@ -17,3 +17,15 @@ ct = collections.Counter(words)
 print(ct)
 print(f"Code Length: 1 line logic")
 
+
+phone_book = collections.defaultdict(list)
+
+def add_contact(name, num):
+    phone_book[name].append(num)
+
+add_contact("Alice", "555-0101")
+add_contact("Alice", "555-9999") 
+add_contact("Bob", "555-2020")
+add_contact("Charlie", "555-3030")
+
+print(phone_book)
