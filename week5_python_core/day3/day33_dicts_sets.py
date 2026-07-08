@@ -51,3 +51,10 @@ for word in words:
     first_char = word[0].lower()
     grouped_words.setdefault(first_char, []).append(word)
 print(grouped_words)
+
+
+s1 = {1, 2, 3, 4, 5}
+s2 = {4, 5, 6, 7, 8}
+print(s1 & s2)
+print(s1 | s2)
+print(s1 - s2)
