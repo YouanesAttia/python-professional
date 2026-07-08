@@ -43,3 +43,11 @@ def find_two_sum(nums, target):
 numbers = [2, 7, 11, 15]
 target_sum = 9
 result = find_two_sum(numbers, target_sum)
+
+
+words = ["apple", "bat", "bar", "atom", "cat", "dog", "door", "elephant"]
+grouped_words = {}
+for word in words:
+    first_char = word[0].lower()
+    grouped_words.setdefault(first_char, []).append(word)
+print(grouped_words)
