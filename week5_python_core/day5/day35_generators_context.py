@@ -18,3 +18,17 @@ def read_large_file(path):
 
 for line in read_large_file("large.txt"):
     print(line, end="")
+
+# `integer_range(start, stop, step)` — your own `range()`, no lists
+def integer_range(start, stop, step=1):
+    if step == 0:
+        raise ValueError("step must not be zero")
+
+    if step > 0:
+        while start < stop:
+            yield start
+            start += step
+    else:
+        while start > stop:
+            yield start
+            start += step
