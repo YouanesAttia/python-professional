@@ -2,6 +2,8 @@ import itertools
 import time
 import tempfile
 import shutil
+from contextlib import contextmanager
+
 
 #  `fibonacci()` generator — yields infinitely. Use `itertools.islice` to take first 20.
 def fibonacci():
@@ -53,3 +55,12 @@ class temp_directory:
     def __exit__(self):
         shutil.rmtree(self.path)
         return False
+
+
+@contextmanager
+def temp_directory():
+    path = tempfile.mkdtemp()
+    try:
+        yield path
+    finally:
+        shutil.rmtree(path)
