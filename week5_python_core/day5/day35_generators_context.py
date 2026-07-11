@@ -1,5 +1,7 @@
 import itertools
 import time
+import tempfile
+import shutil
 
 #  `fibonacci()` generator — yields infinitely. Use `itertools.islice` to take first 20.
 def fibonacci():
@@ -41,3 +43,13 @@ class time_context:
     def __exit__(self, exc_type, exc_value, traceback):
         elapsed = time.perf_counter() - self.start
         print(f"Elapsed time: {elapsed:.6f} seconds")
+
+
+# `temp_directory()` context manager — creates temp dir on enter, deletes on exit even if exception
+class temp_directory:
+    def __enter__(self):
+        self.path = tempfile.mkdtemp()
+        return self.path
+    def __exit__(self):
+        shutil.rmtree(self.path)
+        return False
