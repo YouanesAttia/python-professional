@@ -69,3 +69,7 @@ arr[[1, 5, 7, 2], [0, 3, 1, 2]]        # array([ 4, 23, 29, 10])
 
 
 # Transposing Arrays and Swapping Axes
+arr = np.arange(15).reshape((3, 5))
+print (arr)
+print (arr.T)
+np.dot(arr.T, arr)
