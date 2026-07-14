@@ -122,4 +122,15 @@ arr.sort(1)     # Will sort the 2 row
 names = np.array(['Bob', 'Joe', 'Will', 'Bob', 'Will', 'Joe', 'Joe'])
 np.unique(names)      # ['Bob', 'Joe', 'Will']
 values = np.array([6, 0, 0, 3, 2, 5, 6])
-np.in1d(values, [2, 3, 6])     # [ True, False, False,  True,  True, False,  True]
+
+
+# 4.4 File Input and Output with Arrays
+arr = np.arange(10)
+np.save('some_array', arr)
+arr = np.load('some_array.npy')
+print (arr)
+
+np.savez('array_archive.npz', a=arr, b=arr)
+arch = np.load('array_archive.npz')    # Dict
+arch['a']                              # [0 1 2 3 4 5 6 7 8 9]
+np.savez_compressed('arrays_compressed.npz', a=arr, b=arr)
