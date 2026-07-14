@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+
 my_arr = np.arange(1000000)
 my_list = list(range(1000000))
 # If we tried to multiply each element by any num, you will notice that numpy is much faster
@@ -78,3 +80,46 @@ np.dot(arr.T, arr)
 # 4.2 Universal Functions: Fast Element-Wise Array Functions
 arr = np.random.randn(7) * 5
 remainder, whole_part = np.modf(arr)
+
+
+# 4.3 Array-Oriented Programming with Arrays
+points = np.arange(-5, 5, 0.01) # 1000 equally spaced points
+xs, ys = np.meshgrid(points, points)
+z = np.sqrt(xs**2 + ys**2)
+plt.imshow(z, cmap=plt.cm.gray); plt.colorbar()
+plt.title("Image")
+plt.show()
+
+## Expressing Conditional Logic as Array Operations
+xarr = np.array([1.1, 1.2, 1.3, 1.4, 1.5])
+yarr = np.array([2.1, 2.2, 2.3, 2.4, 2.5])
+cond = np.array([True, False, True, True, False])
+res = [(x if c else y) for x, y, c in zip(xarr, yarr, cond)]
+res = np.where(cond, xarr, yarr)
+
+## Mathematical and Statistical Methods
+arr = np.random.randn(5, 4)
+arr.mean()
+arr.sum()
+arr.mean(axis=1)      # compute mean across the columns
+arr.sum(axis=0)       # compute sum down the rows.
+
+## Methods for Boolean Arrays
+arr = np.random.randn(100)
+print ((arr>0).sum()) # Number of positive values
+
+bools = np.array([False, False, True, False])
+bools.any()           # True
+bools.all()           # False
+
+## Sorting
+arr.sort()
+arr = np.random.randn(5, 3)
+arr.sort(1)     # Will sort the 2 row
+###### returns a sorted copy of an array instead of modifying the array in-place. 
+
+## Unique and Other Set Logic
+names = np.array(['Bob', 'Joe', 'Will', 'Bob', 'Will', 'Joe', 'Joe'])
+np.unique(names)      # ['Bob', 'Joe', 'Will']
+values = np.array([6, 0, 0, 3, 2, 5, 6])
+np.in1d(values, [2, 3, 6])     # [ True, False, False,  True,  True, False,  True]
