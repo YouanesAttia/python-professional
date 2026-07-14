@@ -75,3 +75,11 @@ numpy_time = time.perf_counter() - start
 print(f"Python loop: {python_time:.4f} s")
 print(f"NumPy sum : {numpy_time:.4f} s")
 print(f"Speedup   : {python_time / numpy_time:.1f}x")
+
+
+# Linear algebra
+arr1 = np.array([[1, 2, 3],[1, 2, 3]])
+arr2 = np.array([[1, 2], [1, 2], [1, 2]])
+z = np.dot(arr1, arr2)
+z = arr1 @ arr2
+x = np.linalg.inv(arr1)
