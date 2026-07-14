@@ -68,8 +68,13 @@ arr = np.arange(32).reshape((8, 4))
 arr[[1, 5, 7, 2], [0, 3, 1, 2]]        # array([ 4, 23, 29, 10])
 
 
-# Transposing Arrays and Swapping Axes
+## Transposing Arrays and Swapping Axes
 arr = np.arange(15).reshape((3, 5))
 print (arr)
 print (arr.T)
 np.dot(arr.T, arr)
+
+
+# 4.2 Universal Functions: Fast Element-Wise Array Functions
+arr = np.random.randn(7) * 5
+remainder, whole_part = np.modf(arr)
