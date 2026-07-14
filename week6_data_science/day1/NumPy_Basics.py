@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.linalg import inv, qr
 import matplotlib.pyplot as plt
 
 my_arr = np.arange(1000000)
@@ -134,3 +135,19 @@ np.savez('array_archive.npz', a=arr, b=arr)
 arch = np.load('array_archive.npz')    # Dict
 arch['a']                              # [0 1 2 3 4 5 6 7 8 9]
 np.savez_compressed('arrays_compressed.npz', a=arr, b=arr)
+
+
+# 4.5 Linear Algebra
+x = np.array([[1., 2., 3.], [4., 5., 6.]])
+y = np.array([[6., 23.], [-1, 7], [8, 9]])
+z = x.dot(y)
+z = np.dot(x, y)
+z = x @ y
+"""
+[[  28.,   64.],
+ [  67.,  181.]]
+"""
+
+X = np.random.randn(5, 5)
+mat = X.T.dot(X)
+print(mat.dot(inv(mat)))
