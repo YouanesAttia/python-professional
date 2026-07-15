@@ -224,3 +224,56 @@ obj = pd.Series(range(4), index=['d', 'a', 'b', 'c'])
 print(obj.sort_index())
 frame = pd.DataFrame(np.arange(8).reshape((2, 4)), index=['three', 'one'], columns=['d', 'a', 'b', 'c'])
 frame.sort_index()
+
+# 5.3 Summarizing and Computing Descriptive Statistics
+df = pd.DataFrame([[1.4, np.nan], [7.1, -4.5], [np.nan, np.nan], [0.75, -1.3]], index=['a', 'b', 'c', 'd'], columns=['one', 'two'])
+df.sum()
+"""
+one    9.25
+two   -5.80
+"""
+df.sum(axis='columns')
+"""
+a    1.40
+b    2.60
+c    NaN
+d   -0.55
+"""
+df.mean(axis='columns', skipna=False)
+"""
+a      NaN
+b    1.300
+c      NaN
+d   -0.275
+"""
+df.idxmax()      # one    b          two    d
+df.describe()    # producing multiple summary statistics in one shot
+
+## Unique Values, Value Counts, and Membership
+obj = pd.Series(['c', 'a', 'd', 'a', 'a', 'b', 'b', 'c', 'c'])
+uniques = obj.unique()   # ['c', 'a', 'd', 'b']
+obj.value_counts()
+"""
+c    3
+a    3
+b    2
+d    1
+"""
+mask = obj.isin(['b', 'c'])        # performs a vectorized set membership check
+obj[mask]                          # returns all of bs and cs
+to_match = pd.Series(['c', 'a', 'b', 'b', 'c', 'a'])
+unique_vals = pd.Series(['c', 'b', 'a'])
+pd.Index(unique_vals).get_indexer(to_match)       # [0, 2, 1, 1, 0, 2]
+
+data = pd.DataFrame({'Qu1': [1, 3, 4, 3, 4],
+                    'Qu2': [2, 3, 1, 2, 3],
+                    'Qu3': [1, 5, 2, 4, 4]})
+result = data.apply(pd.value_counts).fillna(0)
+"""
+   Qu1  Qu2  Qu3
+1  1.0  1.0  1.0
+2  0.0  2.0  1.0
+3  2.0  2.0  0.0
+4  2.0  0.0  2.0
+5  0.0  0.0  1.0
+"""
