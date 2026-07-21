@@ -36,3 +36,9 @@ data.to_csv(sys.stdout, sep='|', na_rep='NULL', index=False, header=False, colum
 ## Working with Delimited Formats
 f = open('example/ex7.csv')
 reader = csv.reader(f)
+for line in reader:
+    print(line)
+
+with open('examples/ex7.csv') as f:
+    lines = list(csv.reader(f))
+    header, values = lines[0], lines[1:]
