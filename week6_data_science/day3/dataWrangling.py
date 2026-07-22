@@ -283,3 +283,67 @@ left1.join(right1, on='key')
 4   b      4        7.0
 5   c      5        NaN
 """
+
+## Concatenating Along an Axis
+arr = np.arange(12).reshape((3, 4))
+np.concatenate([arr, arr], axis=1)
+"""
+[[ 0,  1,  2,  3,  0,  1,  2,  3],
+[ 4,  5,  6,  7,  4,  5,  6,  7],
+[ 8,  9, 10, 11,  8,  9, 10, 11]]
+"""
+np.concatenate([arr, arr], axis=0)
+
+s1 = pd.Series([0, 1], index=['a', 'b'])
+s2 = pd.Series([2, 3, 4], index=['c', 'd', 'e'])
+s3 = pd.Series([5, 6], index=['f', 'g'])
+pd.concat([s1, s2, s3])
+"""
+a    0
+b    1
+c    2
+d    3
+e    4
+f    5
+g    6
+"""
+
+pd.concat([s1, s2, s3], axis=1)     # Outer Join by default
+"""
+    0     1    2
+a  0.0  NaN  NaN
+b  1.0  NaN  NaN
+c  NaN  2.0  NaN
+d  NaN  3.0  NaN
+e  NaN  4.0  NaN
+f  NaN  NaN  5.0
+g  NaN  NaN  6.0
+"""
+s4 = pd.concat([s1, s3])
+pd.concat([s1, s4], axis=1, join_axes=[['a', 'c', 'b', 'e']])
+"""
+     0    1
+a  0.0  0.0
+c  NaN  NaN
+b  1.0  1.0
+e  NaN  NaN
+"""
+
+result = pd.concat([s1, s1, s3], keys=['one', 'two', 'three'])
+"""
+one    a    0
+       b    1
+two    a    0
+       b    1
+three  f    5
+       g    6
+"""
+
+result.unstack()
+"""
+         a    b    f    g
+one    0.0  1.0  NaN  NaN
+two    0.0  1.0  NaN  NaN
+three  NaN  NaN  5.0  6.0
+"""
+
