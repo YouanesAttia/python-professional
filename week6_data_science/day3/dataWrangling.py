@@ -384,3 +384,176 @@ df1.combine_first(df2)
 4  7.0  8.0   NaN
 """
 # combine_first = "Take everything from the left. Fill its missing values from the right. If the right has extra index labels, append them too."
+
+# 8.3 Reshaping and Pivoting
+## Reshaping with Hierarchical Indexing
+data = pd.DataFrame(np.arange(6).reshape((2, 3)),
+                    index=pd.Index(['Ohio', 'Colorado'], name='state'),
+                    columns=pd.Index(['one', 'two', 'three'], name='number'))
+
+result = data.stack()  # pivots the columns into the rows, producing a Series:
+"""
+state     number
+Ohio      one       0
+          two       1
+          three     2
+Colorado  one       3
+          two       4
+          three     5
+"""
+result.unstack()        # By default the innermost level is unstacked
+"""
+number    one  two  three
+state                    
+Ohio        0    1      2
+Colorado    3    4      5
+"""
+
+result.unstack(0)
+result.unstack('state')
+"""
+state   Ohio  Colorado
+number                
+one        0         3
+two        1         4
+three      2         5
+"""
+
+s1 = pd.Series([0, 1, 2, 3], index=['a', 'b', 'c', 'd'])
+s2 = pd.Series([4, 5, 6], index=['c', 'd', 'e'])
+data2 = pd.concat([s1, s2], keys=['one', 'two'])
+data2.unstack()
+"""
+       a    b    c    d    e
+one  0.0  1.0  2.0  3.0  NaN
+two  NaN  NaN  4.0  5.0  6.0
+"""
+
+data2.unstack().stack(dropna= False)       # Stacking filters out missing data by default
+
+df = pd.DataFrame({'left': result, 'right': result + 5},
+                  columns=pd.Index(['left', 'right'], name='side'))
+
+"""
+side             left  right
+state    number             
+Ohio     one        0      5
+         two        1      6
+         three      2      7
+Colorado one        3      8
+         two        4      9
+         three      5     10
+"""
+
+## Pivoting “Long” to “Wide” Format
+raw_data = {
+    'year': [1959, 1959, 1959, 1959],
+    'quarter': [1, 2, 3, 4],
+    'realgdp': [2710.3, 2778.8, 2775.4, 2785.2],
+    'infl': [0.00, 2.34, 2.74, 0.27],
+    'unemp': [5.8, 5.1, 5.3, 5.6]
+}
+df = pd.DataFrame(raw_data)
+print("--- 1. RAW DATA (WIDE FORMAT) ---")
+print(df)
+# PURPOSE: Data is "Wide" (each variable has its own column). 
+# Time is split across two columns (year/quarter).
+
+
+# --- STEP 1: CREATE A SINGLE TIME INDEX ---
+periods = pd.PeriodIndex(year=df.year, quarter=df.quarter, name='date')
+df.index = periods.to_timestamp('D', 'end') 
+print("\n--- 2. AFTER SETTING DATE INDEX ---")
+print(df)
+# PURPOSE: Combine year/quarter into a single recognizable Date.
+# 'end' ensures the date is the last day of the quarter (e.g., 1959-03-31).
+
+
+# --- STEP 2: FILTER COLUMNS ---
+columns = pd.Index(['realgdp', 'infl', 'unemp'], name='item')
+df = df.reindex(columns=columns)
+print("\n--- 3. AFTER FILTERING COLUMNS ---")
+print(df)
+# PURPOSE: Remove unnecessary columns. 
+# We also name the column axis 'item' to prepare for the stack.
+
+
+# --- STEP 3: THE "STACK" (TRANSFORM TO LONG) ---
+# We chain three things here:
+# A) .stack() -> Moves column names into the rows
+# B) .reset_index() -> Turns the index levels back into normal columns
+# C) .rename() -> Fixes the name of the column containing the actual numbers
+ldata = df.stack().reset_index().rename(columns={0: 'value'})
+
+print("\n--- 4. THE LONG FORMAT (ldata) ---")
+print(ldata)
+# PURPOSE: This is "Long Format." 
+# Every row is now a single measurement. 
+# Great for SQL databases and certain charting libraries (like Seaborn).
+
+
+# --- STEP 4: PIVOTING (TRANSFORM BACK TO WIDE) ---
+pivoted = ldata.pivot(index='date', columns='item', values='value')
+print("\n--- 5. PIVOTED BACK TO WIDE ---")
+print(pivoted)
+# PURPOSE: This "undos" the stack. 
+# It turns the unique values in 'item' back into individual column headers.
+
+
+# --- STEP 5: PIVOTING MULTIPLE COLUMNS ---
+# Let's add a fake "value2" column to show how pivot handles two data columns
+ldata['value2'] = np.random.randn(len(ldata))
+pivoted_multi = ldata.pivot(index='date', columns='item')
+
+print("\n--- 6. PIVOTING WITH MULTIPLE VALUE COLUMNS ---")
+print(pivoted_multi.head())
+# PURPOSE: If you don't specify the 'values' argument in .pivot(), 
+# Pandas creates "Hierarchical Columns" (Value and Value2 both get their own GDP/Infl/Unemp).
+
+
+## Pivoting “Wide” to “Long” Format
+df = pd.DataFrame({'key': ['foo', 'bar', 'baz'],
+                   'A': [1, 2, 3],
+                   'B': [4, 5, 6],
+                   'C': [7, 8, 9]})
+
+melted = pd.melt(df, ['key'])
+"""
+Out[160]: 
+   key variable  value
+0  foo        A      1
+1  bar        A      2
+2  baz        A      3
+3  foo        B      4
+4  bar        B      5
+5  baz        B      6
+6  foo        C      7
+7  bar        C      8
+8  baz        C      9
+"""
+
+reshaped = melted.pivot('key', 'variable', 'value')
+"""
+variable  A  B  C
+key              
+bar       2  5  8
+baz       3  6  9
+foo       1  4  7
+"""
+reshaped.reset_index()
+"""
+variable  key  A  B  C
+0         bar  2  5  8
+1         baz  3  6  9
+2         foo  1  4  7
+"""
+pd.melt(df, id_vars=['key'], value_vars=['A', 'B'])
+"""
+   key variable  value
+0  foo        A      1
+1  bar        A      2
+2  baz        A      3
+3  foo        B      4
+4  bar        B      5
+5  baz        B      6
+"""
