@@ -218,3 +218,68 @@ pd.merge(left, right, on=['key1', 'key2'], how='outer')
 """
 
 pd.merge(left, right, on='key1', suffixes=('_left', '_right'))
+
+## Merging on Index
+left1 = pd.DataFrame({'key': ['a', 'b', 'a', 'a', 'b', 'c'],
+                      'value': range(6)})
+
+right1 = pd.DataFrame({'group_val': [3.5, 7]}, index=['a', 'b'])
+pd.merge(left1, right1, left_on='key', right_index=True)
+"""
+  key  value  group_val
+0   a      0        3.5
+2   a      2        3.5
+3   a      3        3.5
+1   b      1        7.0
+4   b      4        7.0
+"""
+
+lefth = pd.DataFrame({'key1': ['Ohio', 'Ohio', 'Ohio',
+                               'Nevada', 'Nevada'],
+                      'key2': [2000, 2001, 2002, 2001, 2002],
+                      'data': np.arange(5.)})
+
+righth = pd.DataFrame(np.arange(12).reshape((6, 2)),
+                      index=[['Nevada', 'Nevada', 'Ohio', 'Ohio',
+                              'Ohio', 'Ohio'],
+                             [2001, 2000, 2000, 2000, 2001, 2002]],
+                      columns=['event1', 'event2'])
+
+pd.merge(lefth, righth, left_on=['key1', 'key2'], right_index=True)
+"""
+   data    key1  key2  event1  event2
+0   0.0    Ohio  2000       4       5
+0   0.0    Ohio  2000       6       7
+1   1.0    Ohio  2001       8       9
+2   2.0    Ohio  2002      10      11
+3   3.0  Nevada  2001       0       1
+"""
+
+left2 = pd.DataFrame([[1., 2.], [3., 4.], [5., 6.]],
+                     index=['a', 'c', 'e'],
+                     columns=['Ohio', 'Nevada'])
+
+right2 = pd.DataFrame([[7., 8.], [9., 10.], [11., 12.], [13, 14]],
+                      index=['b', 'c', 'd', 'e'],
+                      columns=['Missouri', 'Alabama'])
+
+left2.join(right2, how='outer')
+"""
+   Ohio  Nevada  Missouri  Alabama
+a   1.0     2.0       NaN      NaN
+b   NaN     NaN       7.0      8.0
+c   3.0     4.0       9.0     10.0
+d   NaN     NaN      11.0     12.0
+e   5.0     6.0      13.0     14.0
+"""
+
+left1.join(right1, on='key')
+"""
+  key  value  group_val
+0   a      0        3.5
+1   b      1        7.0
+2   a      2        3.5
+3   a      3        3.5
+4   b      4        7.0
+5   c      5        NaN
+"""
