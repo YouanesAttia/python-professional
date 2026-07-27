@@ -64,3 +64,73 @@ print(soup.get_text())
 # and they lived at the bottom of a well.
 #
 # ...
+
+
+# Kinds of objects
+## Class tag
+soup = BeautifulSoup('<b class="boldest">Extremely bold</b>', 'html.parser')
+tag = soup.b
+print(type(tag))
+
+#### Name
+print(tag.name)      # 'b'
+tag.name = "blockquote"
+tag                  # <blockquote class="boldest">Extremely bold</blockquote>
+
+#### Attrs
+tag = BeautifulSoup('<b id="boldest">bold</b>', 'html.parser').b
+tag['id']            # 'boldest'
+tag.attrs            # {'id': 'boldest'}
+tag.attrs.keys()     # dict_keys(['id'])
+tag['id'] = 'verybold'
+tag['another-attribute'] = 1
+tag                  # <b another-attribute="1" id="verybold"></b>
+del tag['id']
+del tag['another-attribute']
+tag                  # <b>bold</b>
+
+#### Multi-valued attributes
+css_soup = BeautifulSoup('<p class="body"></p>', 'html.parser')
+css_soup.p['class']  # ['body']
+
+css_soup = BeautifulSoup('<p class="body strikeout"></p>', 'html.parser')
+css_soup.p['class']  # ['body', 'strikeout']
+
+id_soup = BeautifulSoup('<p id="my id"></p>', 'html.parser')    # not a Multi-valued attributes
+id_soup.p['id']      # 'my id'
+
+no_list_soup = BeautifulSoup('<p class="body strikeout"></p>', 'html.parser', multi_valued_attributes=None)
+no_list_soup.p['class']     # 'body strikeout'
+
+
+## class NavigableString
+soup = BeautifulSoup('<b class="boldest">Extremely bold</b>', 'html.parser')
+tag = soup.b
+tag.string                  # 'Extremely bold'
+type(tag.string)            # <class 'bs4.element.NavigableString'>
+
+unicode_string = str(tag.string)      # To unicode
+unicode_string                        # 'Extremely bold'
+type(unicode_string)                  # <type 'str'>
+
+tag.string.replace_with("No longer bold")
+tag                                   # <b class="boldest">No longer bold</b>
+
+doc = BeautifulSoup("<document><content/>INSERT FOOTER HERE</document", "xml")
+footer = BeautifulSoup("<footer>Here's the footer</footer>", "xml")
+doc.find(text="INSERT FOOTER HERE").replace_with(footer)
+print(doc)
+# <?xml version="1.0" encoding="utf-8"?>
+# <document><content/><footer>Here's the footer</footer></document>
+
+
+## Special strings
+#### class comment
+markup = "<b><!--Hey, buddy. Want to buy a used parser?--></b>"
+soup = BeautifulSoup(markup, 'html.parser')
+comment = soup.b.string
+type(comment)                   # <class 'bs4.element.Comment'>
+print(soup.b.prettify())
+# <b>
+#  <!--Hey, buddy. Want to buy a used parser?-->
+# </b>
